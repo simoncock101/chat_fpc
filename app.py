@@ -18,11 +18,19 @@ st.set_page_config(
 st.markdown("""
 <style>
 
+/* ================================
+   FONDO GENERAL
+================================ */
+
 .stApp {
     background-color: #f4f6f8;
+    color: #222222;
 }
 
-/* ENCABEZADO */
+
+/* ================================
+   ENCABEZADO
+================================ */
 
 .header {
     background: linear-gradient(135deg, #0b6623, #138a36);
@@ -37,16 +45,18 @@ st.markdown("""
 .header h1 {
     font-size: 42px;
     margin-bottom: 5px;
-    color: white;
+    color: white !important;
 }
 
 .header p {
     font-size: 18px;
-    color: white;
+    color: white !important;
 }
 
 
-/* TARJETA DE INFORMACIÓN */
+/* ================================
+   TARJETA DE INFORMACIÓN
+================================ */
 
 .card {
     background-color: white;
@@ -60,39 +70,58 @@ st.markdown("""
 .card-title {
     font-size: 22px;
     font-weight: bold;
-    color: #0b6623;
+    color: #0b6623 !important;
 }
 
 .card p {
-    color: #333333;
+    color: #333333 !important;
 }
 
 
-/* CAJA DE RESPUESTA */
+/* ================================
+   TEXTO GENERAL
+================================ */
+
+.stApp p {
+    color: #333333;
+}
+
+.stApp label {
+    color: #333333 !important;
+}
+
+.stApp h1,
+.stApp h2,
+.stApp h3,
+.stApp h4,
+.stApp h5 {
+    color: #222222;
+}
+
+
+/* ================================
+   RESPUESTA
+================================ */
 
 .response-box {
-    background: #172019;
-    padding: 25px;
+    background-color: #172019;
+    padding: 22px 25px 12px 25px;
     border-radius: 15px 15px 0px 0px;
     box-shadow: 0px 4px 15px rgba(0,0,0,0.18);
     border-top: 5px solid #19a74a;
     margin-top: 25px;
-    margin-bottom: 0px;
 }
 
 .response-box h3 {
-    color: #4ade80;
+    color: #4ade80 !important;
     font-size: 22px;
     margin: 0;
 }
 
-
-/* TEXTO DE LA RESPUESTA */
-
 .answer-text {
-    background: #172019;
-    color: white;
-    padding: 0px 25px 25px 25px;
+    background-color: #172019;
+    color: white !important;
+    padding: 5px 25px 25px 25px;
     border-radius: 0px 0px 15px 15px;
     box-shadow: 0px 4px 15px rgba(0,0,0,0.18);
     font-size: 17px;
@@ -112,7 +141,9 @@ st.markdown("""
 }
 
 
-/* SIDEBAR */
+/* ================================
+   SIDEBAR
+================================ */
 
 section[data-testid="stSidebar"] {
     background-color: #0d3b1e;
@@ -123,7 +154,9 @@ section[data-testid="stSidebar"] * {
 }
 
 
-/* CAMPO DE PREGUNTA */
+/* ================================
+   CAMPO DE PREGUNTA
+================================ */
 
 .stTextArea textarea {
     background-color: white !important;
@@ -137,16 +170,41 @@ section[data-testid="stSidebar"] * {
 }
 
 
-/* CAMPO DE API */
+/* ================================
+   CAMPO API
+================================ */
 
 .stTextInput input {
     background-color: white !important;
     color: #222222 !important;
     border: 1px solid #0b6623 !important;
+    border-radius: 8px;
+}
+
+.stTextInput input::placeholder {
+    color: #777777 !important;
 }
 
 
-/* MÉTRICAS */
+/* ================================
+   CARGADOR DE ARCHIVOS
+================================ */
+
+[data-testid="stFileUploader"] {
+    background-color: white;
+    border-radius: 10px;
+    padding: 10px;
+    border: 1px solid #dddddd;
+}
+
+[data-testid="stFileUploader"] * {
+    color: #333333 !important;
+}
+
+
+/* ================================
+   MÉTRICAS
+================================ */
 
 div[data-testid="stMetric"] {
     background-color: white;
@@ -155,9 +213,51 @@ div[data-testid="stMetric"] {
     box-shadow: 0px 2px 8px rgba(0,0,0,0.08);
 }
 
+div[data-testid="stMetricLabel"] {
+    color: #555555 !important;
+}
+
+div[data-testid="stMetricValue"] {
+    color: #222222 !important;
+}
+
+
+/* ================================
+   MENSAJES DE STREAMLIT
+================================ */
+
+div[data-testid="stAlert"] {
+    border-radius: 10px;
+}
+
+div[data-testid="stAlert"] p {
+    color: #333333 !important;
+}
+
+
+/* ================================
+   BOTONES
+================================ */
+
+.stButton button {
+    background-color: #0b6623;
+    color: white;
+    border: none;
+    border-radius: 8px;
+}
+
+.stButton button:hover {
+    background-color: #138a36;
+    color: white;
+}
+
 </style>
 """, unsafe_allow_html=True)
 
+
+# =================================
+# ENCABEZADO
+# =================================
 
 st.markdown("""
 <div class="header">
@@ -167,7 +267,12 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 
+# =================================
+# SIDEBAR
+# =================================
+
 st.sidebar.markdown("## ⚽ FPC Chat")
+
 st.sidebar.markdown("---")
 
 st.sidebar.markdown("""
@@ -186,31 +291,58 @@ Puedes preguntarle sobre:
 """)
 
 st.sidebar.markdown("---")
+
 st.sidebar.caption("Aplicación desarrollada con Streamlit")
 st.sidebar.caption("Python: " + platform.python_version())
 
 
+# =================================
+# IMAGEN
+# =================================
+
 col1, col2, col3 = st.columns([1, 2, 1])
 
 try:
-    image = Image.open("nacional.jpg")
-    col2.image(image, width=350)
-except:
-    col2.warning("No se pudo cargar la imagen nacional.jpg")
 
+    image = Image.open("nacional.jpg")
+
+    col2.image(
+        image,
+        width=350
+    )
+
+except:
+
+    col2.warning(
+        "No se pudo cargar la imagen nacional.jpg"
+    )
+
+
+# =================================
+# INFORMACIÓN
+# =================================
 
 st.markdown("""
 <div class="card">
-<div class="card-title">🏟️ Conoce el fútbol profesional colombiano</div>
+
+<div class="card-title">
+🏟️ Conoce el fútbol profesional colombiano
+</div>
+
 <p>
 Carga un documento PDF y utiliza este chat para realizar preguntas
 sobre la información contenida en él. El sistema buscará los fragmentos
 más relacionados con tu pregunta y utilizará inteligencia artificial
 para generar una respuesta.
 </p>
+
 </div>
 """, unsafe_allow_html=True)
 
+
+# =================================
+# API
+# =================================
 
 st.markdown("### 🔐 Configuración")
 
@@ -221,12 +353,23 @@ ke = st.text_input(
 )
 
 if ke:
+
     os.environ["OPENAI_API_KEY"] = ke
-    st.success("Clave ingresada correctamente")
+
+    st.success(
+        "Clave ingresada correctamente"
+    )
 
 if not ke:
-    st.warning("Por favor ingresa tu clave de API de OpenAI para continuar")
 
+    st.warning(
+        "Por favor ingresa tu clave de API de OpenAI para continuar"
+    )
+
+
+# =================================
+# PDF
+# =================================
 
 st.markdown("### 📄 Documento")
 
@@ -235,6 +378,10 @@ pdf = st.file_uploader(
     type="pdf"
 )
 
+
+# =================================
+# PROCESAMIENTO
+# =================================
 
 if pdf is not None and ke:
 
@@ -247,11 +394,18 @@ if pdf is not None and ke:
         extracted_text = page.extract_text()
 
         if extracted_text:
+
             text = text + extracted_text
 
 
-    st.success("Documento cargado correctamente")
+    st.success(
+        "Documento cargado correctamente"
+    )
 
+
+    # =================================
+    # MÉTRICAS
+    # =================================
 
     col1, col2 = st.columns(2)
 
@@ -260,6 +414,10 @@ if pdf is not None and ke:
         f"{len(text):,}"
     )
 
+
+    # =================================
+    # DIVIDIR TEXTO
+    # =================================
 
     text_splitter = CharacterTextSplitter(
         separator="\n",
@@ -280,8 +438,11 @@ if pdf is not None and ke:
     st.markdown("---")
 
 
-    embeddings = OpenAIEmbeddings()
+    # =================================
+    # BASE DE CONOCIMIENTO
+    # =================================
 
+    embeddings = OpenAIEmbeddings()
 
     knowledge_base = FAISS.from_texts(
         chunks,
@@ -289,10 +450,18 @@ if pdf is not None and ke:
     )
 
 
-    st.success("Base de conocimiento lista")
+    st.success(
+        "Base de conocimiento lista"
+    )
 
 
-    st.markdown("## 💬 Pregúntale al documento")
+    # =================================
+    # PREGUNTA
+    # =================================
+
+    st.markdown(
+        "## 💬 Pregúntale al documento"
+    )
 
     st.write(
         "Escribe una pregunta relacionada con el contenido del documento."
@@ -305,6 +474,10 @@ if pdf is not None and ke:
         height=100
     )
 
+
+    # =================================
+    # RESPUESTA
+    # =================================
 
     if user_question:
 
@@ -331,12 +504,16 @@ if pdf is not None and ke:
         )
 
 
-        st.markdown("""
-        <div class="response-box">
-            <h3>⚽ Respuesta del agente</h3>
-        </div>
-        """, unsafe_allow_html=True)
+        # TÍTULO DE RESPUESTA
 
+        st.markdown("""
+<div class="response-box">
+<h3>⚽ Respuesta del agente</h3>
+</div>
+""", unsafe_allow_html=True)
+
+
+        # CONTENIDO DE RESPUESTA
 
         st.markdown(
             '<div class="answer-text">' +
@@ -345,6 +522,10 @@ if pdf is not None and ke:
             unsafe_allow_html=True
         )
 
+
+# =================================
+# MENSAJES
+# =================================
 
 elif pdf is not None and not ke:
 
