@@ -10,13 +10,12 @@ from langchain.llms import OpenAI
 from langchain.chains.question_answering import load_qa_chain
 
 st.set_page_config(
-page_title="Chat Fútbol Profesional Colombiano",
-page_icon="⚽",
-layout="wide"
+    page_title="Chat Fútbol Profesional Colombiano",
+    page_icon="⚽",
+    layout="wide"
 )
 
 st.markdown("""
-
 <style>
 .stApp {
     background-color: #f4f6f8;
@@ -39,7 +38,6 @@ st.markdown("""
 
 .header p {
     font-size: 18px;
-    margin-top: 5px;
 }
 
 .card {
@@ -55,7 +53,6 @@ st.markdown("""
     font-size: 22px;
     font-weight: bold;
     color: #0b6623;
-    margin-bottom: 8px;
 }
 
 .response-box {
@@ -64,7 +61,6 @@ st.markdown("""
     border-radius: 15px;
     box-shadow: 0px 3px 12px rgba(0,0,0,0.08);
     border-top: 5px solid #0b6623;
-    margin-top: 15px;
 }
 
 section[data-testid="stSidebar"] {
@@ -75,27 +71,23 @@ section[data-testid="stSidebar"] * {
     color: white !important;
 }
 </style>
-
 """, unsafe_allow_html=True)
 
 st.markdown("""
-
 <div class="header">
     <h1>⚽ Chat del Fútbol Profesional Colombiano</h1>
     <p>Consulta información sobre la historia, equipos, jugadores y datos del FPC</p>
 </div>
 """, unsafe_allow_html=True)
 
-with st.sidebar:
-st.markdown("## ⚽ FPC Chat")
-st.markdown("---")
+st.sidebar.markdown("## ⚽ FPC Chat")
+st.sidebar.markdown("---")
 
-
-st.markdown("""
+st.sidebar.markdown("""
 ### Sobre este agente
 
-Este agente utiliza inteligencia artificial para responder
-preguntas basadas en el contenido del documento PDF que cargues.
+Este agente utiliza inteligencia artificial para responder preguntas
+basadas en el contenido del documento PDF que cargues.
 
 Puedes preguntarle sobre:
 
@@ -106,22 +98,19 @@ Puedes preguntarle sobre:
 - 📚 Historia del fútbol colombiano
 """)
 
-st.markdown("---")
-st.caption("Aplicación desarrollada con Streamlit")
-st.caption("Python: " + platform.python_version())
-```
+st.sidebar.markdown("---")
+st.sidebar.caption("Aplicación desarrollada con Streamlit")
+st.sidebar.caption("Python: " + platform.python_version())
 
 col1, col2, col3 = st.columns([1, 2, 1])
 
-with col2:
 try:
-image = Image.open("nacional.jpg")
-st.image(image, width=350)
-except Exception as e:
-st.warning(f"No se pudo cargar la imagen: {e}")
+    image = Image.open("nacional.jpg")
+    col2.image(image, width=350)
+except:
+    col2.warning("No se pudo cargar la imagen nacional.jpg")
 
 st.markdown("""
-
 <div class="card">
 <div class="card-title">🏟️ Conoce el fútbol profesional colombiano</div>
 <p>
@@ -136,48 +125,45 @@ para generar una respuesta.
 st.markdown("### 🔐 Configuración")
 
 ke = st.text_input(
-"Ingresa tu Clave de OpenAI",
-type="password",
-placeholder="sk-..."
+    "Ingresa tu Clave de OpenAI",
+    type="password",
+    placeholder="sk-..."
 )
 
 if ke:
-os.environ["OPENAI_API_KEY"] = ke
-st.success("Clave ingresada correctamente")
-else:
-st.warning("Por favor ingresa tu clave de API de OpenAI para continuar")
+    os.environ["OPENAI_API_KEY"] = ke
+    st.success("Clave ingresada correctamente")
+
+if not ke:
+    st.warning("Por favor ingresa tu clave de API de OpenAI para continuar")
 
 st.markdown("### 📄 Documento")
 
 pdf = st.file_uploader(
-"Carga aquí el documento PDF",
-type="pdf"
+    "Carga aquí el documento PDF",
+    type="pdf"
 )
 
 if pdf is not None and ke:
 
-```
-try:
-    with st.spinner("Procesando documento..."):
+    pdf_reader = PdfReader(pdf)
 
-        pdf_reader = PdfReader(pdf)
-        text = ""
+    text = ""
 
-        for page in pdf_reader.pages:
-            extracted_text = page.extract_text()
+    for page in pdf_reader.pages:
+        extracted_text = page.extract_text()
 
-            if extracted_text:
-                text += extracted_text
+        if extracted_text:
+            text = text + extracted_text
 
     st.success("Documento cargado correctamente")
 
     col1, col2 = st.columns(2)
 
-    with col1:
-        st.metric(
-            "Caracteres encontrados",
-            f"{len(text):,}"
-        )
+    col1.metric(
+        "Caracteres encontrados",
+        f"{len(text):,}"
+    )
 
     text_splitter = CharacterTextSplitter(
         separator="\n",
@@ -188,21 +174,19 @@ try:
 
     chunks = text_splitter.split_text(text)
 
-    with col2:
-        st.metric(
-            "Fragmentos creados",
-            len(chunks)
-        )
+    col2.metric(
+        "Fragmentos creados",
+        len(chunks)
+    )
 
     st.markdown("---")
 
-    with st.spinner("Creando base de conocimiento..."):
+    embeddings = OpenAIEmbeddings()
 
-        embeddings = OpenAIEmbeddings()
-        knowledge_base = FAISS.from_texts(
-            chunks,
-            embeddings
-        )
+    knowledge_base = FAISS.from_texts(
+        chunks,
+        embeddings
+    )
 
     st.success("Base de conocimiento lista")
 
@@ -220,59 +204,41 @@ try:
 
     if user_question:
 
-        with st.spinner("Buscando información..."):
+        docs = knowledge_base.similarity_search(
+            user_question
+        )
 
-            docs = knowledge_base.similarity_search(
-                user_question
-            )
+        llm = OpenAI(
+            temperature=0,
+            model_name="gpt-4o-mini-2024-07-18"
+        )
 
-            llm = OpenAI(
-                temperature=0,
-                model_name="gpt-4o-mini-2024-07-18"
-            )
+        chain = load_qa_chain(
+            llm,
+            chain_type="stuff"
+        )
 
-            chain = load_qa_chain(
-                llm,
-                chain_type="stuff"
-            )
-
-            response = chain.run(
-                input_documents=docs,
-                question=user_question
-            )
+        response = chain.run(
+            input_documents=docs,
+            question=user_question
+        )
 
         st.markdown("""
         <div class="response-box">
-            <h3>⚽ Respuesta</h3>
+        <h3>⚽ Respuesta</h3>
         </div>
         """, unsafe_allow_html=True)
 
         st.markdown(response)
 
-except Exception as e:
-
-    st.error(
-        f"Error al procesar el PDF: {str(e)}"
-    )
-
-    import traceback
-
-    st.error(
-        traceback.format_exc()
-    )
-
-
 elif pdf is not None and not ke:
 
-
-st.warning(
-    "⚠️ Primero debes ingresar tu clave de API de OpenAI."
-)
+    st.warning(
+        "⚠️ Primero debes ingresar tu clave de API de OpenAI."
+    )
 
 else:
 
-
-st.info(
-    "📄 Carga un archivo PDF para comenzar a utilizar el chat."
-)
-
+    st.info(
+        "📄 Carga un archivo PDF para comenzar a utilizar el chat."
+    )
