@@ -9,15 +9,11 @@ from langchain.vectorstores import FAISS
 from langchain.llms import OpenAI
 from langchain.chains.question_answering import load_qa_chain
 
-# CONFIGURACIÓN DE LA PÁGINA
-
 st.set_page_config(
 page_title="Chat Fútbol Profesional Colombiano",
 page_icon="⚽",
 layout="wide"
 )
-
-# ESTILOS VISUALES
 
 st.markdown("""
 
@@ -40,13 +36,11 @@ st.markdown("""
 .header h1 {
     font-size: 42px;
     margin-bottom: 5px;
-    font-weight: 700;
 }
 
 .header p {
     font-size: 18px;
     margin-top: 5px;
-    opacity: 0.9;
 }
 
 .card {
@@ -82,25 +76,9 @@ section[data-testid="stSidebar"] * {
     color: white !important;
 }
 
-.stButton > button {
-    background-color: #0b6623;
-    color: white;
-    border-radius: 10px;
-    border: none;
-    padding: 10px 25px;
-    font-weight: bold;
-}
-
-.stButton > button:hover {
-    background-color: #138a36;
-    color: white;
-}
-
 </style>
 
 """, unsafe_allow_html=True)
-
-# ENCABEZADO
 
 st.markdown("""
 
@@ -109,8 +87,6 @@ st.markdown("""
     <p>Consulta información sobre la historia, equipos, jugadores y datos del FPC</p>
 </div>
 """, unsafe_allow_html=True)
-
-# SIDEBAR
 
 with st.sidebar:
 
@@ -140,8 +116,6 @@ st.caption("Aplicación desarrollada con Streamlit")
 st.caption("Python: " + platform.python_version())
 ```
 
-# IMAGEN
-
 col1, col2, col3 = st.columns([1, 2, 1])
 
 with col2:
@@ -154,8 +128,6 @@ try:
 except Exception as e:
     st.warning(f"No se pudo cargar la imagen: {e}")
 ```
-
-# INFORMACIÓN
 
 st.markdown("""
 
@@ -172,8 +144,6 @@ para generar una respuesta.
 
 </div>
 """, unsafe_allow_html=True)
-
-# API KEY
 
 st.markdown("### 🔐 Configuración")
 
@@ -199,8 +169,6 @@ st.warning(
 )
 ```
 
-# CARGAR PDF
-
 st.markdown("### 📄 Documento")
 
 pdf = st.file_uploader(
@@ -208,14 +176,11 @@ pdf = st.file_uploader(
 type="pdf"
 )
 
-# PROCESAMIENTO DEL PDF
-
 if pdf is not None and ke:
 
 ```
 try:
 
-    # EXTRAER TEXTO
     with st.spinner("Procesando documento..."):
 
         pdf_reader = PdfReader(pdf)
@@ -231,7 +196,6 @@ try:
 
     st.success("Documento cargado correctamente")
 
-    # INFORMACIÓN DEL DOCUMENTO
     col1, col2 = st.columns(2)
 
     with col1:
@@ -241,7 +205,6 @@ try:
             f"{len(text):,}"
         )
 
-    # DIVIDIR TEXTO
     text_splitter = CharacterTextSplitter(
         separator="\n",
         chunk_size=500,
@@ -260,7 +223,6 @@ try:
 
     st.markdown("---")
 
-    # CREAR BASE DE CONOCIMIENTO
     with st.spinner("Creando base de conocimiento..."):
 
         embeddings = OpenAIEmbeddings()
@@ -272,12 +234,10 @@ try:
 
     st.success("Base de conocimiento lista")
 
-    # CHAT
     st.markdown("## 💬 Pregúntale al documento")
 
     st.write(
-        "Escribe una pregunta relacionada con el contenido "
-        "del documento."
+        "Escribe una pregunta relacionada con el contenido del documento."
     )
 
     user_question = st.text_area(
@@ -286,7 +246,6 @@ try:
         height=100
     )
 
-    # PROCESAR PREGUNTA
     if user_question:
 
         with st.spinner("Buscando información..."):
@@ -295,25 +254,21 @@ try:
                 user_question
             )
 
-            # MODELO
             llm = OpenAI(
                 temperature=0,
                 model_name="gpt-4o-mini-2024-07-18"
             )
 
-            # CADENA DE PREGUNTAS
             chain = load_qa_chain(
                 llm,
                 chain_type="stuff"
             )
 
-            # GENERAR RESPUESTA
             response = chain.run(
                 input_documents=docs,
                 question=user_question
             )
 
-        # RESPUESTA
         st.markdown("""
         <div class="response-box">
             <h3>⚽ Respuesta</h3>
@@ -339,8 +294,6 @@ except Exception as e:
     )
 ```
 
-# MENSAJES DE ESTADO
-
 elif pdf is not None and not ke:
 
 ```
@@ -356,5 +309,3 @@ st.info(
     "📄 Carga un archivo PDF para comenzar a utilizar el chat."
 )
 ```
-
-
