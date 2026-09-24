@@ -10,7 +10,7 @@ from langchain.chains.question_answering import load_qa_chain
 import platform
 
 # App title and presentation
-st.title('Generación Aumentada por Recuperación (RAG) 💬')
+st.title('Chat del Futbol profesional colombiano')
 st.write("Versión de Python:", platform.python_version())
 
 # Load and display image
@@ -22,7 +22,7 @@ except Exception as e:
 
 # Sidebar information
 with st.sidebar:
-    st.subheader("Este Agente te ayudará a realizar análisis sobre el PDF cargado")
+    st.subheader("Este Agente te ayudará conocer mas acerca del FPC")
 
 # Get API key from user
 ke = st.text_input('Ingresa tu Clave de OpenAI', type="password")
