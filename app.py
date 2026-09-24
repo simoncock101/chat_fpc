@@ -18,7 +18,6 @@ layout="wide"
 st.markdown("""
 
 <style>
-
 .stApp {
     background-color: #f4f6f8;
 }
@@ -75,7 +74,6 @@ section[data-testid="stSidebar"] {
 section[data-testid="stSidebar"] * {
     color: white !important;
 }
-
 </style>
 
 """, unsafe_allow_html=True)
@@ -89,12 +87,10 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 with st.sidebar:
-
-```
 st.markdown("## ⚽ FPC Chat")
-
 st.markdown("---")
 
+```
 st.markdown("""
 ### Sobre este agente
 
@@ -111,7 +107,6 @@ Puedes preguntarle sobre:
 """)
 
 st.markdown("---")
-
 st.caption("Aplicación desarrollada con Streamlit")
 st.caption("Python: " + platform.python_version())
 ```
@@ -119,29 +114,22 @@ st.caption("Python: " + platform.python_version())
 col1, col2, col3 = st.columns([1, 2, 1])
 
 with col2:
-
-```
 try:
-    image = Image.open("nacional.jpg")
-    st.image(image, width=350)
-
+image = Image.open("nacional.jpg")
+st.image(image, width=350)
 except Exception as e:
-    st.warning(f"No se pudo cargar la imagen: {e}")
-```
+st.warning(f"No se pudo cargar la imagen: {e}")
 
 st.markdown("""
 
 <div class="card">
-
 <div class="card-title">🏟️ Conoce el fútbol profesional colombiano</div>
-
 <p>
 Carga un documento PDF y utiliza este chat para realizar preguntas
 sobre la información contenida en él. El sistema buscará los fragmentos
 más relacionados con tu pregunta y utilizará inteligencia artificial
 para generar una respuesta.
 </p>
-
 </div>
 """, unsafe_allow_html=True)
 
@@ -154,20 +142,10 @@ placeholder="sk-..."
 )
 
 if ke:
-
-```
 os.environ["OPENAI_API_KEY"] = ke
-
 st.success("Clave ingresada correctamente")
-```
-
 else:
-
-```
-st.warning(
-    "Por favor ingresa tu clave de API de OpenAI para continuar"
-)
-```
+st.warning("Por favor ingresa tu clave de API de OpenAI para continuar")
 
 st.markdown("### 📄 Documento")
 
@@ -180,15 +158,12 @@ if pdf is not None and ke:
 
 ```
 try:
-
     with st.spinner("Procesando documento..."):
 
         pdf_reader = PdfReader(pdf)
-
         text = ""
 
         for page in pdf_reader.pages:
-
             extracted_text = page.extract_text()
 
             if extracted_text:
@@ -199,7 +174,6 @@ try:
     col1, col2 = st.columns(2)
 
     with col1:
-
         st.metric(
             "Caracteres encontrados",
             f"{len(text):,}"
@@ -215,7 +189,6 @@ try:
     chunks = text_splitter.split_text(text)
 
     with col2:
-
         st.metric(
             "Fragmentos creados",
             len(chunks)
@@ -226,7 +199,6 @@ try:
     with st.spinner("Creando base de conocimiento..."):
 
         embeddings = OpenAIEmbeddings()
-
         knowledge_base = FAISS.from_texts(
             chunks,
             embeddings
@@ -272,14 +244,10 @@ try:
         st.markdown("""
         <div class="response-box">
             <h3>⚽ Respuesta</h3>
+        </div>
         """, unsafe_allow_html=True)
 
         st.markdown(response)
-
-        st.markdown(
-            "</div>",
-            unsafe_allow_html=True
-        )
 
 except Exception as e:
 
@@ -292,20 +260,19 @@ except Exception as e:
     st.error(
         traceback.format_exc()
     )
-```
+
 
 elif pdf is not None and not ke:
 
-```
+
 st.warning(
     "⚠️ Primero debes ingresar tu clave de API de OpenAI."
 )
-```
 
 else:
 
-```
+
 st.info(
     "📄 Carga un archivo PDF para comenzar a utilizar el chat."
 )
-```
+
